@@ -5,10 +5,20 @@
 		"ghcr.io/devcontainers/features/node:1": {
 			"version": "lts"
 		}
-	}
+	},
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	"forwardPorts": [5292],
+	"forwardPorts": [
+		5000
+	],
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-dotnettools.csharp",
+				"dbaeumer.vscode-eslint"
+			]
+		}
+	},
 
 	// Use 'postCreateCommand' to run commands after the container is created.
 	// "postCreateCommand": "dotnet restore",
