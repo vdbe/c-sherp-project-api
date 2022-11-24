@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  api:
+    image: mcr.microsoft.com/devcontainers/dotnet:0-6.0
+    build: 
+      context: .
+      dockerfile: api.Dockerfile
+
+    volumes:
+      - ..:/workspace:cached
+
+      # Uncomment the next line to use Docker from inside the container. See https://aka.ms/vscode-remote/samples/docker-from-docker-compose for details.
+      # - /var/run/docker.sock:/var/run/docker.sock 
+
+    # Overrides default command so things don't shut down after the process ends.
+    command: /bin/sh -c "while sleep 1000; do :; done"  
+
+    network_mode: service:db
+
+
+  db:
+    image: mysql/mysql-server
+    container_name: mysqlserver
+    command: [mysqld, --default-authentication-plugin=mysql_native_password]
+    environment:
+      MYSQL_ROOT_PASSWORD: toor123
+      MYSQL_DATABASE: db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: toor123
+      MYSQL_ROOT_HOST: '%'
+    volumes:
+      - mysqldata:/var/lib/mysql
+    expose:
+      - 3306
+
+volumes:
+  mysqldata:
