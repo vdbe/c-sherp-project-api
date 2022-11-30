@@ -1,0 +1,17 @@
+{
+    "sqltools.connections": [
+        {
+            "name": "Container database",
+            "mysqlOptions": {
+                "authProtocol": "default"
+            },
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 3306,
+            "driver": "MySQL",
+            "database": "db",
+            "username": "user",
+            "password": "toor123"
+        },
+    ]
+}
