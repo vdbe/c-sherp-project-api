@@ -98,7 +98,6 @@ public class RpsController : ControllerBase
     public async Task<ActionResult> RegisterToLeaderBoard(LeaderBoardWriteDto leaderBoardWriteDto)
     {
         Game game = await this.repo.GetGameByGuid(leaderBoardWriteDto.Game);
-        System.Console.WriteLine(JsonSerializer.Serialize(game));
 
         // Check if game is lost
         // You can only play active games
@@ -109,7 +108,6 @@ public class RpsController : ControllerBase
 
         // Check if game is not already registerd
         LeaderBoard leaderBoard = await this.repo.GetLeaderBoardByGame(game);
-        System.Console.WriteLine(JsonSerializer.Serialize(leaderBoard));
         if (leaderBoard != null)
         {
             return StatusCode(StatusCodes.Status403Forbidden);

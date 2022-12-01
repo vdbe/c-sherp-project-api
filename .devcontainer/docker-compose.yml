@@ -15,13 +15,18 @@ services:
 
     # Overrides default command so things don't shut down after the process ends.
     command: /bin/sh -c "while sleep 1000; do :; done"  
+    expose:
+      - 5000
+    networks:
+      - backend
+      - frontend
 
-    network_mode: service:db
+    links:
+      - "db:database"
 
 
   db:
     image: mysql/mysql-server
-    container_name: mysqlserver
     command: [mysqld, --default-authentication-plugin=mysql_native_password]
     environment:
       MYSQL_ROOT_PASSWORD: toor123
@@ -29,10 +34,33 @@ services:
       MYSQL_USER: user
       MYSQL_PASSWORD: toor123
       MYSQL_ROOT_HOST: '%'
+
     volumes:
       - mysqldata:/var/lib/mysql
+
     expose:
       - 3306
 
+    networks:
+      - backend
+
+  cloudflared:
+    image: 'cloudflare/cloudflared'
+    volumes:
+        - '../cloudflared/:/etc/cloudflared/'
+    command: 'tunnel --credentials-file /etc/cloudflared/tunnel.json run c-sherp-api'
+    user: root
+    networks:
+      - frontend
+
+  bash:
+    image: 'bash'
+    command: /bin/sh -c "while sleep 1000; do :; done"  
+    networks:
+      - frontend
+
+networks:
+  frontend:
+  backend:
 volumes:
   mysqldata:

@@ -70,7 +70,7 @@ public class MysqlRepo : IRepo
             return null;
         }
 
-        LeaderBoard leaderBoard = new LeaderBoard() {Game = game};
+        LeaderBoard leaderBoard = new LeaderBoard() {Game = game, Name = name};
         await this.context.LeaderBoard.AddAsync(leaderBoard);
 
         await this.SaveChanges();

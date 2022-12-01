@@ -12,7 +12,7 @@
 	// The 'service' property is the name of the service for the container that VS Code should
 	// use. Update this value and .devcontainer/docker-compose.yml to the real service name.
 	"service": "api",
-	"runServices": ["api", "db"],
+	"runServices": ["api", "db", "cloudflared", "bash"],
 
 	// The 'workspaceFolder' property is the path VS Code should open by default when
 	// connected. Corresponds to a volume mount in .devcontainer/docker-compose.yml
@@ -26,7 +26,7 @@
                 "authProtocol": "default"
             },
             "previewLimit": 50,
-            "server": "localhost",
+            "server": "database",
             "port": 3306,
             "driver": "MySQL",
             "database": "db",
