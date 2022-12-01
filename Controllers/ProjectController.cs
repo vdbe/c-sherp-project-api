@@ -121,10 +121,6 @@ public class RpsController : ControllerBase
 
         LeaderBoardReadDto leaderBoardReadDto = new LeaderBoardReadDto() { Name = leaderBoard2.Name, On = leaderBoard2.On, Game = this.map.Map<GameReadDto>(leaderBoard2.Game) };
 
-        System.Console.WriteLine(JsonSerializer.Serialize(leaderBoard2));
-
-        // Add game to leaderboard
-        // TODO: Map to read object
         return Ok(leaderBoardReadDto);
     }
 }

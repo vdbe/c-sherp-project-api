@@ -3,69 +3,102 @@ using c_sherp_project_api.Models;
 namespace c_sherp_project_api.Repositories;
 
 public class MockRepo : IRepo {
+    int gameIdCounter = 0;
     List<Game> gameList = new List<Game>();
+
+    int leaderBoardIdCounter = 0;
     List<LeaderBoard> leaderBoardList = new List<LeaderBoard>();
 
     public MockRepo() {
-    }
+        this.gameList.Add(new Game(){GameId=this.gameIdCounter++, Score=0});
+        this.gameList.Add(new Game(){GameId=this.gameIdCounter++, Score=1});
+        this.gameList.Add(new Game(){GameId=this.gameIdCounter++, Score=2});
+        this.gameList.Add(new Game(){GameId=this.gameIdCounter++, Score=2, Active=false});
 
-    public Task<LeaderBoard> AddGameToLeaderBoard(Guid guid, string name)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<Game> EndGame(Guid guid)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<Game> GetGameByGuid(Guid guid)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<Game> IncrementGameScore(Guid guid)
-    {
-        throw new NotImplementedException();
+        {
+            Game game = new Game(){GameId=this.gameIdCounter++, Score=3, Active=false};
+            LeaderBoard leaderBoard = new LeaderBoard(){LeaderBoardId=this.leaderBoardIdCounter++, Game=game, GameId=game.GameId};
+        }
+        {
+            Game game = new Game(){GameId=this.gameIdCounter++, Score=2, Active=false};
+            LeaderBoard leaderBoard = new LeaderBoard(){LeaderBoardId=this.leaderBoardIdCounter++, Game=game, GameId=game.GameId};
+        }
+        
     }
 
     public Task<Game> NewGame()
     {
-        throw new NotImplementedException();
+        Game game = new Game(){GameId=this.gameIdCounter++, Score=1};
+        this.gameList.Add(game);
+
+        return Task.FromResult<Game>(game);
     }
 
-    Task<LeaderBoard> IRepo.AddGameToLeaderBoard(Guid guid, string name)
+    public Task<LeaderBoard> AddGameToLeaderBoard(Guid guid, string name)
     {
-        throw new NotImplementedException();
+        Game game = this.gameList.First(game => game.Guid == guid);
+        if (game == null) {
+            return null;
+        }
+
+        LeaderBoard leaderBoard = new LeaderBoard() {LeaderBoardId=this.leaderBoardIdCounter++, GameId=game.GameId, Game = game};
+        this.leaderBoardList.Add(leaderBoard);
+        
+        return Task.FromResult<LeaderBoard>(leaderBoard);
     }
 
-    Task<Game> IRepo.EndGame(Guid guid)
+    public Task<Game> EndGame(Guid guid)
     {
-        throw new NotImplementedException();
+        Game game = this.gameList.First(game => game.Guid == guid);
+        if (game == null) {
+            return null;
+        }
+
+        game.Active = false;
+
+        return Task.FromResult<Game>(game);
     }
 
-    Task<Game> IRepo.GetGameByGuid(Guid guid)
+    public Task<Game> GetGameByGuid(Guid guid)
     {
-        throw new NotImplementedException();
+        Game game = this.gameList.First(game => game.Guid == guid);
+        if (game == null) {
+            return null;
+        }
+
+        return Task.FromResult<Game>(game);
     }
 
-    Task<LeaderBoard> IRepo.GetLeaderBoardByGame(Game game)
+    public Task<Game> IncrementGameScore(Guid guid)
     {
-        throw new NotImplementedException();
+        Game game = this.gameList.First(game => game.Guid == guid);
+        if (game == null) {
+            return null;
+        }
+
+        if (game.Active == false) {
+            // TODO: Error handling
+            return null;
+        }
+
+        game.Score++;
+
+        return Task.FromResult<Game>(game);
     }
 
-    Task<Game> IRepo.IncrementGameScore(Guid guid)
+    public Task<int> SaveChanges()
     {
-        throw new NotImplementedException();
+        return Task.FromResult<int>(0);
     }
 
-    Task<Game> IRepo.NewGame()
+    public Task<LeaderBoard> GetLeaderBoardByGame(Game game)
     {
-        throw new NotImplementedException();
-    }
-
-    Task<int> IRepo.SaveChanges()
-    {
-        throw new NotImplementedException();
+        LeaderBoard leaderBoard = this.leaderBoardList.First(lb => lb.GameId == game.GameId);
+        if (leaderBoard == null) {
+            // TODO: Error handling
+            return null;
+        }
+        
+        return Task.FromResult<LeaderBoard>(leaderBoard);
     }
 }
