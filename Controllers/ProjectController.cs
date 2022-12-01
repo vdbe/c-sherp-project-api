@@ -33,9 +33,10 @@ public class RpsController : ControllerBase
     }
 
     [HttpGet("game/{guid}")]
-    public async Task<ActionResult> GetGame(Guid guid) {
+    public async Task<ActionResult> GetGame(Guid guid)
+    {
         Game game = await this.repo.GetGameByGuid(guid);
-        
+
         return Ok(this.map.Map<GameReadDto>(game));
     }
 
@@ -116,8 +117,14 @@ public class RpsController : ControllerBase
 
         await this.repo.AddGameToLeaderBoard(game.Guid, leaderBoardWriteDto.Name);
         await this.repo.SaveChanges();
+        LeaderBoard leaderBoard2 = await this.repo.GetLeaderBoardByGame(game);
+
+        LeaderBoardReadDto leaderBoardReadDto = new LeaderBoardReadDto() { Name = leaderBoard2.Name, On = leaderBoard2.On, Game = this.map.Map<GameReadDto>(leaderBoard2.Game) };
+
+        System.Console.WriteLine(JsonSerializer.Serialize(leaderBoard2));
 
         // Add game to leaderboard
-        return Ok(leaderBoardWriteDto);
+        // TODO: Map to read object
+        return Ok(leaderBoardReadDto);
     }
 }

@@ -6,7 +6,7 @@ public class LeaderBoardReadDto
 {
     public string Name { get; set; }
 
-    public DateTime on { get; set; }
+    public DateTime On { get; set; }
 
     public GameReadDto Game { get; set; }
 }
