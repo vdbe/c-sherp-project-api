@@ -101,4 +101,9 @@ public class MockRepo : IRepo {
         
         return Task.FromResult<LeaderBoard>(leaderBoard);
     }
+    Task<List<LeaderBoard>> IRepo.GetLeaderBoard(int count)
+    {
+        this.leaderBoardList.OrderBy(lb => lb.Game.Score).Take(count);
+        throw new NotImplementedException();
+    }
 }

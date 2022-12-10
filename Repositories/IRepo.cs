@@ -17,4 +17,6 @@ public interface IRepo {
 
     public Task<LeaderBoard> GetLeaderBoardByGame(Game game);
 
+    public Task<List<LeaderBoard>> GetLeaderBoard(int count);
+
 }

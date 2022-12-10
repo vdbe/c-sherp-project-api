@@ -43,6 +43,7 @@ public class RpsController : ControllerBase
     [HttpPost("game/{guid}/play")]
     public async Task<ActionResult> PlayGame(Guid guid, Play play)
     {
+        System.Console.WriteLine(JsonSerializer.Serialize(play));
         Game game = await this.repo.GetGameByGuid(guid);
 
         // You can only play active games
@@ -120,5 +121,16 @@ public class RpsController : ControllerBase
         LeaderBoardReadDto leaderBoardReadDto = new LeaderBoardReadDto() { Name = leaderBoard2.Name, On = leaderBoard2.On, Game = this.map.Map<GameReadDto>(leaderBoard2.Game) };
 
         return Ok(leaderBoardReadDto);
+    }
+
+    [HttpGet("leaderboard")]
+    public async Task<ActionResult> GetLeaderBoard(int count = 10)
+    {
+        System.Console.WriteLine("GetLeadeboard");
+        List<LeaderBoard> leaderBoards = await this.repo.GetLeaderBoard(count);
+
+        List<LeaderBoardReadDto> leaderBoardsRead = this.map.Map<List<LeaderBoardReadDto>>(leaderBoards);
+
+        return Ok(leaderBoardsRead);
     }
 }
