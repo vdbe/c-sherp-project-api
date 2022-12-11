@@ -4,6 +4,7 @@ using AutoMapper;
 using c_sherp_project_api.Models;
 using c_sherp_project_api.Repositories;
 using c_sherp_project_api.dto;
+using c_sherp_project_api.lib;
 using System.Text.Json;
 
 namespace c_sherp_project_api.Controllers;
@@ -60,7 +61,8 @@ public class RpsController : ControllerBase
         // 0: draw
         // 1: won
         // 2: lost
-        Result result = (Result)((play.Choice - randomChoice + 3) % 3);
+        //Result result = (Result)((play.Choice - randomChoice + 3) % 3);
+        Result result = Lib.GetRoundResult(play.Choice, randomChoice);
 
         switch (result)
         {
