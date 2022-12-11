@@ -5,42 +5,32 @@ namespace unit_testing;
 
 public class UnitTestGameLogic
 {
-    [Fact]
-    public void Draw()
+    [Theory]
+    [InlineData(Choice.Rock, Choice.Rock, Result.Draw)]
+    [InlineData(Choice.Paper, Choice.Paper, Result.Draw)]
+    [InlineData(Choice.Scissors, Choice.Scissors, Result.Draw)]
+    [InlineData(Choice.Rock, Choice.Scissors, Result.Win)]
+    [InlineData(Choice.Paper, Choice.Rock, Result.Win)]
+    [InlineData(Choice.Scissors, Choice.Paper, Result.Win)]
+    [InlineData(Choice.Rock, Choice.Paper, Result.Loss)]
+    [InlineData(Choice.Paper, Choice.Scissors, Result.Loss)]
+    [InlineData(Choice.Scissors, Choice.Rock, Result.Loss)]
+    public void GetRoundResultTest(Choice choice1, Choice choice2, Result result)
     {
-        Result rock = Lib.GetRoundResult(Choice.Rock, Choice.Rock);
-        Assert.Equal(Result.Draw, rock);
-
-        Result paper = Lib.GetRoundResult(Choice.Paper, Choice.Paper);
-        Assert.Equal(Result.Draw, paper);
-
-        Result scissors = Lib.GetRoundResult(Choice.Scissors, Choice.Scissors);
-        Assert.Equal(Result.Draw, scissors);
+        Result r = Lib.GetRoundResult(choice1, choice2);
+        Assert.Equal(result, r);
     }
 
-    [Fact]
-    public void Win()
-    {
-        Result rs = Lib.GetRoundResult(Choice.Rock, Choice.Scissors);
-        Assert.Equal(Result.Win, rs);
-
-        Result pr = Lib.GetRoundResult(Choice.Paper, Choice.Rock);
-        Assert.Equal(Result.Win, pr);
-
-        Result sp = Lib.GetRoundResult(Choice.Scissors, Choice.Paper);
-        Assert.Equal(Result.Win, sp);
+    [MemberData(nameof(Data))]
+    public void VerifyGetCarListAsync(int? colorID, List<int> carIDs, int? sellerID){
+        Assert.Equal(carIDs.Count, 3);
     }
 
-    [Fact]
-    public void Loss()
-    {
-        Result rp = Lib.GetRoundResult(Choice.Rock, Choice.Paper);
-        Assert.Equal(Result.Loss, rp);
 
-        Result ps = Lib.GetRoundResult(Choice.Paper, Choice.Scissors);
-        Assert.Equal(Result.Loss, ps);
-
-        Result sr = Lib.GetRoundResult(Choice.Scissors, Choice.Rock);
-        Assert.Equal(Result.Loss, sr);
+    public static IEnumerable<object[]> Data(){
+        yield return new object[] { null, new List<int>{ 42, 2112 }, null };
+        yield return new object[] { 1, new List<int>{ 43, 2112 }, null };
+        yield return new object[] { null, new List<int>{ 44, 2112 }, 6 };
     }
+
 }
