@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\c-sherp-project-api.csproj" />
+    <ProjectReference Include="..\api\c-sherp-project-api.csproj" />
   </ItemGroup>
 
 </Project>

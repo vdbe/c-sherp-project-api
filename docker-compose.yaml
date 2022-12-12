@@ -1,0 +1,70 @@
+version: '3'
+
+services:
+  api:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+      dotnet-ef:
+        condition: service_completed_successfully
+    links:
+      - "db:database"
+    expose:
+      - 80
+    networks:
+      - frontend
+      - backend
+  
+  dotnet-ef:
+    image: mcr.microsoft.com/dotnet/sdk:6.0
+    build:
+      context: .
+      dockerfile: dotnet-ef.Dockerfile
+    entrypoint: ["bash" , "-c", "cd /App && dotnet tool restore && dotnet ef database update --no-build || tail -f /dev/null"]
+    restart: "no"
+
+    volumes:
+      - ./api:/App
+
+    depends_on:
+      db:
+        condition: service_healthy
+    links:
+      - "db:database"
+    networks:
+      - backend
+
+  db:
+    image: mysql:latest
+    #command: [mysqld, --default-authentication-plugin=mysql_native_password]
+    expose:
+      - 3306
+    ports:
+      - 3307:3306
+    env_file:
+      - db.env
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+    networks:
+      - backend
+
+  cloudflared:
+    image: 'cloudflare/cloudflared'
+    volumes:
+        - './cloudflared/:/etc/cloudflared/'
+    command: 'tunnel --credentials-file /etc/cloudflared/tunnel.json run c-sherp-api'
+    user: root
+    depends_on:
+      api:
+        condition: service_started
+    networks:
+      - frontend
+
+networks:
+  frontend:
+  backend:
+volumes:
+  db_data:
