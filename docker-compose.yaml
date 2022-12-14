@@ -17,10 +17,9 @@ services:
       - backend
   
   dotnet-ef:
-    image: mcr.microsoft.com/dotnet/sdk:6.0
     build:
       context: .
-      dockerfile: dotnet-ef.Dockerfile
+      dockerfile: dotnet-ef123.Dockerfile
     entrypoint: ["bash" , "-c", "cd /App && dotnet tool restore && dotnet ef database update --no-build || tail -f /dev/null"]
     restart: "no"
 
@@ -42,6 +41,8 @@ services:
       - 3306
     ports:
       - 3307:3306
+    volumes:
+      - db_data:/var/lib/mysql
     env_file:
       - db.env
     healthcheck:
