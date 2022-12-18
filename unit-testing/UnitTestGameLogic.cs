@@ -21,16 +21,32 @@ public class UnitTestGameLogic
         Assert.Equal(result, r);
     }
 
-    [MemberData(nameof(Data))]
-    public void VerifyGetCarListAsync(int? colorID, List<int> carIDs, int? sellerID){
-        Assert.Equal(carIDs.Count, 3);
+    [Theory]
+    [MemberData(nameof(GameData))]
+    public void UpdateGameLogicTest(Game startGame, List<Result> results, Game endGame)
+    {
+        Game game = startGame;
+
+        foreach (Result result in results)
+        {
+            Lib.UpdateGame(ref game, result);
+        }
+
+        Assert.Equal(game.Score, endGame.Score);
+        Assert.Equal(game.Active, endGame.Active);
     }
 
 
-    public static IEnumerable<object[]> Data(){
-        yield return new object[] { null, new List<int>{ 42, 2112 }, null };
-        yield return new object[] { 1, new List<int>{ 43, 2112 }, null };
-        yield return new object[] { null, new List<int>{ 44, 2112 }, 6 };
+    public static IEnumerable<object[]> GameData()
+    {
+        yield return new object[] { new Game(), new List<Result> { Result.Win }, new Game() { Score = 1, Active = true } };
+        yield return new object[] { new Game(), new List<Result> { Result.Loss }, new Game() { Score = 0, Active = false } };
+        yield return new object[] { new Game(), new List<Result> { Result.Draw, Result.Win }, new Game() { Score = 1, Active = true } };
+        yield return new object[] { new Game(), new List<Result> { Result.Draw, Result.Win, Result.Loss }, new Game() { Score = 1, Active = false } };
+        yield return new object[] { new Game(), new List<Result> { Result.Loss, Result.Win }, new Game() { Score = 0, Active = false } };
+        yield return new object[] { new Game(), new List<Result> { Result.Win, Result.Loss, Result.Win }, new Game() { Score = 1, Active = false } };
+        yield return new object[] { new Game() { Score = 1 }, new List<Result> { Result.Loss }, new Game() { Score = 1, Active = false } };
+        yield return new object[] { new Game() { Active = false }, new List<Result> { Result.Win }, new Game() { Score = 0, Active = false } };
     }
 
 }

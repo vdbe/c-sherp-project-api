@@ -64,28 +64,7 @@ public class RpsController : ControllerBase
         //Result result = (Result)((play.Choice - randomChoice + 3) % 3);
         Result result = Lib.GetRoundResult(play.Choice, randomChoice);
 
-        switch (result)
-        {
-            case Result.Draw:
-                {
-                    break;
-                }
-            case Result.Win:
-                {
-                    game.Score++;
-                    break;
-                }
-            case Result.Loss:
-                {
-                    game.Active = false;
-                    break;
-                }
-            default:
-                {
-                    // Unreachable
-                    break;
-                }
-        }
+        Lib.UpdateGame(ref game, result);
 
         if (result != Result.Draw)
         {
